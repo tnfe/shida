@@ -1,0 +1,365 @@
+<template>
+  <div ref="con" class="screenshot-layer">
+    <div
+      v-for="(page, i) in pagesData.pages"
+      :id="'slayer-p-' + i"
+      :key="page.uuid"
+      :style="{ width: pagesData.width + 'px', height: pagesData.height + 'px' }"
+      class="slayer-page"
+    >
+      <div class="page-preview-wrapper" :id="'slayer-pw-' + i" :style="getCommonStyle(page.commonStyle)">
+        <component
+          v-for="item in page.elements"
+          :key="item.uuid"
+          :uuid="item.uuid"
+          :id="'slayer-e-' + item.uuid"
+          :defaultStyle="item.commonStyle"
+          :style="
+            getCommonStyle({
+              ...item.commonStyle,
+              width: item.commonStyle.width,
+              height: item.commonStyle.height,
+              left: item.commonStyle.left,
+              top: item.commonStyle.top,
+              position: item.commonStyle.position
+            })
+          "
+          :is="item.elName"
+          class="element-on-edit-pane"
+          v-bind="item.propsValue"
+        />
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import { isArray, isEmpty, clone, cloneDeep, forEach } from "lodash";
+import { mapState, mapGetters } from "vuex";
+import html3canvas from "html3canvas";
+import shortid from "js-shortid";
+import $ from "cash-dom";
+
+import { _qk_register_components_object } from "@client/plugins/index";
+import editorProjectConfig from "@client/pages/editor/DataModel";
+import $bus from "@client/eventBus";
+import Timeout from "await-timeout";
+
+export default {
+  name: "screenshot-layer",
+  components: {
+    ..._qk_register_components_object
+  },
+  computed: {
+    ...mapState({ projectData: state => state.editor.projectData })
+  },
+  created() {
+    $bus.$on("publish", this.publishFun);
+  },
+  beforeDestroy() {
+    $bus.$off("publish", this.publishFun);
+    this.pagesData = { pages: [] };
+  },
+  data() {
+    return {
+      getCommonStyle: editorProjectConfig.getCommonStyle,
+      pagesData: { pages: [] },
+      videoData: [],
+      folderId: 1
+    };
+  },
+  methods: {
+    publishFun() {
+      this.reset();
+      // 删掉音乐元素,并且按照zindex重新排序
+      this.pagesData = editorProjectConfig.processingProjectData(this.projectData);
+      this.videoData = editorProjectConfig.cloneToVideoData(this.projectData);
+
+      this.$nextTick(async () => {
+        this.folderId = shortid.gen();
+        const domIdsArr = this.groupingPagesData(this.pagesData);
+        const noAniDomArr = this.rearrangeDom(domIdsArr);
+        const result = await this.screenshotAndUpload(noAniDomArr);
+        const videoData = this.updateVideoData(result);
+
+        await Timeout.set(1000);
+        this.beginMakingVideo(videoData);
+      });
+    },
+
+    /**
+     * 更新并且替换 videoData
+     */
+    updateVideoData(result) {
+      if (!result) return this.videoData;
+
+      for (let i = 0; i < result.length; i++) {
+        const { id, url, localPath } = result[i];
+        const element = editorProjectConfig.getDataByKeyFromVideoData(this.videoData, id);
+        if (element) {
+          element.propsValue.imageSrc = url;
+          element.propsValue.localPath = localPath;
+        }
+      }
+      return this.videoData;
+    },
+
+    /**
+     * 开始制作视频
+     */
+    async beginMakingVideo(videoData) {
+      console.log(videoData);
+      const res = await this.$API.beginMakeVideo({ videoData, folderId: this.folderId });
+      if (res.code == 200) {
+        const { taskId, uuid } = res.body;
+        this.getProgressing({ taskId, uuid });
+      }
+    },
+
+    getProgressing({ taskId, uuid }) {
+      let index = 0;
+      const DELAY = 1000 / 2;
+      const MAX = (100 * 1000) / DELAY;
+
+      const id = setInterval(async () => {
+        const res = await this.$API.getVideoPercent({ taskId, uuid });
+        if (res.code == 200) {
+          const { progress, state, videoUrl } = res.body;
+          this.$emit("making", { progress, state, videoUrl });
+
+          if (state === "complete") {
+            clearInterval(id);
+            this.updateData({ videoUrl });
+          }
+        } else {
+          clearInterval(id);
+        }
+
+        if (index > MAX) clearInterval(id);
+        index++;
+      }, DELAY);
+    },
+
+    updateData({ videoUrl }) {
+      this.projectData.videoUrl = videoUrl;
+      this.$API.updatePage({ pageData: this.projectData });
+    },
+
+    /**
+     * 截图并且一起上传
+     */
+    async screenshotAndUpload(noAniDomArr) {
+      const pfiles = [];
+      for (let i = 0; i < noAniDomArr.length; i++) {
+        const elements = noAniDomArr[i];
+        const files = await this.screenshots(elements, i);
+        if (isEmpty(files)) continue;
+
+        for (let j = 0; j < files.length; j++) {
+          const file = files[j];
+          pfiles.push(file);
+        }
+      }
+
+      return await this.uploadAllImages(pfiles);
+    },
+
+    async uploadAllImages(pfiles) {
+      if (isEmpty(pfiles)) return;
+
+      const params = new FormData();
+      forEach(pfiles, (file, index) => {
+        params.append(`file${index}`, file.file);
+        params.append(`data${index}`, file.id);
+      });
+      params.append("folder", this.folderId);
+
+      const res = await this.$API.uploadMultipleImages(params);
+      if (res.status) {
+        return res.body;
+      }
+
+      return null;
+    },
+
+    /**
+     * 截图 - 同时截取一个page下的多个容器元素
+     */
+    async screenshots(elements, i) {
+      if (isEmpty(elements)) return;
+
+      const el = this.$refs.con;
+      const { width, height } = this.pagesData;
+      const size = elements.map(x => [width, height]);
+
+      const canvass = await html3canvas(el, {
+        elements,
+        size,
+        scale: 1,
+        x: 0,
+        y: 0,
+        allowTaint: true,
+        removeContainer: true,
+        backgroundColor: null,
+        proxy: "/quark/html2canvas/corsproxy"
+      });
+
+      const files = [];
+      forEach(canvass, (canvas, j) => {
+        const name = `image-${i}-${j}`;
+        const file = this.$mUtils.canvasToFile({ name, canvas, quality: 0.9, type: "png" });
+        files.push(file);
+      });
+
+      return files;
+    },
+
+    /**
+     * 按照元素是否有动画分组 形如：[[0, 1, 2], 3, 4, [5, 6]]
+     *
+     * 1、没有动画的都合并到一张图片 -> [0, 1, 2]
+     * 2、有动画的独立保存 -> 3, 4
+     * 3、填充videoData
+     */
+    groupingPagesData(pagesData) {
+      const domIdsArr = [];
+      const donotMergeLayer = ele => {
+        return !isEmpty(ele.animations) || ele.elName === "qk-video" || ele.elName === "qk-image-carousel";
+      };
+
+      for (let i = 0; i < pagesData.pages.length; i++) {
+        const page = pagesData.pages[i];
+        const videoPage = this.videoData.pages[i];
+        const pageArr = [];
+        let eleArr = [];
+        let index = 0;
+
+        // 添加-无动画的元素合
+        const pushSubArr = () => {
+          if (!isEmpty(eleArr)) {
+            pageArr.push(clone(eleArr));
+            videoPage.elements.push({
+              elName: "qk-image",
+              isFFImage: true,
+              index,
+              commonStyle: {
+                width: pagesData.width,
+                height: pagesData.height
+              },
+              key: `image-${i}-${index}`,
+              propsValue: { imageSrc: null }
+            });
+
+            index++;
+          }
+          eleArr.length = 0;
+        };
+
+        // 遍历元素处理
+        for (let j = 0; j < page.elements.length; j++) {
+          const ele = page.elements[j];
+          if (donotMergeLayer(ele)) {
+            pushSubArr();
+            pageArr.push(ele.uuid);
+            videoPage.elements.push(cloneDeep(ele));
+          } else {
+            eleArr.push(ele.uuid);
+          }
+        }
+
+        pushSubArr();
+        domIdsArr.push(pageArr);
+      }
+
+      return domIdsArr;
+    },
+
+    /**
+     * 重排dom
+     * 1、没有动画的并相邻的放到一个容器div下
+     * 2、有动画的隐藏
+     * 3、返回 无动画组件 的容器组合
+     * 形如 [[div1, div2], [div3, div4, div5]]
+     */
+    rearrangeDom(domIdsArr) {
+      const noAniDomArr = [];
+      const con = this.$refs.con;
+
+      for (let i = 0; i < domIdsArr.length; i++) {
+        const eleArr = domIdsArr[i];
+        const domArr = [];
+        noAniDomArr.push(domArr);
+
+        for (let j = 0; j < eleArr.length; j++) {
+          const eles = eleArr[j];
+          if (isArray(eles)) {
+            // 合并
+            const elesCon = this.createElesCon(j);
+            $(con)
+              .find(`#slayer-pw-${i}`)
+              .append(elesCon);
+            domArr.push(elesCon.get(0));
+
+            for (let k = 0; k < eles.length; k++) {
+              elesCon.append($(con).find(`#slayer-e-${eles[k]}`));
+            }
+          } else {
+            // 隐藏
+            $(con)
+              .find(`#slayer-e-${eles}`)
+              .css("display", "none");
+          }
+        }
+      }
+
+      return noAniDomArr;
+    },
+
+    /**
+     * 创建一个临时容器
+     */
+    createElesCon(index = 99) {
+      const { width, height } = this.pagesData;
+
+      return $("<div></div>")
+        .addClass("slayer-page page-con")
+        .css({
+          width: width + "px",
+          height: height + "px",
+          zIndex: index + 100,
+          position: "absolute",
+          overflow: "hidden",
+          top: 0,
+          left: 0
+        });
+    },
+
+    reset() {
+      this.pagesData = { pages: [] };
+      this.videoData = [];
+    }
+  }
+};
+</script>
+
+<style scoped>
+.screenshot-layer {
+  /* visibility: hidden; */
+  position: fixed;
+  z-index: 9999;
+  top: -9999px;
+  left: -9999px;
+}
+
+.slayer-page {
+  display: block;
+  float: left;
+  overflow: hidden;
+}
+
+.page-preview-wrapper {
+  height: 100%;
+  width: 100%;
+  position: relative;
+}
+</style>

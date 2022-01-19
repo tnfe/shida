@@ -38,21 +38,21 @@
     |--service					--------axios封装
     |--App.vue					--------App
     |--main.js					--------入口文件
-    |--permission.js			--------权限控制
+    |--permission.js			        --------权限控制
 |-- server					--------服务器端项目代码
     |--confog					--------配置文件
     |--controller				--------数据库链接相关
     |--extend					--------框架扩展
     |--model					-------Schema和Model
     |--middleware				--------中间件
-    |--core						--------Koa MVC实现自动加载核心文件
+    |--core				        --------Koa MVC实现自动加载核心文件
     |--views					--------ejs页面模板
     |--public					--------静态资源
     |--router.js				--------路由
     |--app.js					--------服务端入口
 |-- common					--------前后端公用代码模块（如加解密）
-|-- engine-template			--------页面模板引擎，使用webpack打包成js提供页面引用
-|-- config.json				--------配置文件
+|-- engine-template			        --------页面模板引擎，使用webpack打包成js提供页面引用
+|-- config.json				        --------配置文件
 ```
 
 ### 编辑器整体设计

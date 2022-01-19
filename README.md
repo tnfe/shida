@@ -119,7 +119,7 @@ npm install pm2 -g
 ### 启动命令
 
 ```
-npm run start
+npm run publish && npm run start
 ```
 
 ### License

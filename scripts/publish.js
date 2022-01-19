@@ -5,11 +5,15 @@ const dist = path.join(__dirname, "../dist");
 const static = path.join(__dirname, "../server/public/static");
 const public = path.join(__dirname, "../server/public");
 
-beginCloneFile(clone);
+fs.ensureDir(public).then(() => {
+  beginCloneFile(clone);
+}).catch(err => {
+  console.error(err);
+});
 
 function beginCloneFile(callback) {
   fs.readdir(public, (err, files) => {
-    files.forEach(file => {
+    files?.forEach(file => {
       if (
         /[0-9]{1,10}/gi.test(file) ||
         /.*update\.(json|js)$/gi.test(file) ||

@@ -1,7 +1,13 @@
 const path = require("path");
 const fs = require("fs-extra");
 const shortid = require("js-shortid");
+const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
+const ffprobePath = require('@ffprobe-installer/ffprobe').path;
 const { FFCreatorCenter } = require("ffcreator");
+
+// 设置 FFmpeg 相关路径
+FFCreatorCenter.setFFmpegPath(ffmpegPath);
+FFCreatorCenter.setFFprobePath(ffprobePath);
 
 module.exports = app => ({
   async making() {

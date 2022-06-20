@@ -68,25 +68,6 @@
 
 ## 开发调试
 
-### 本项目使用了 FFmpeg 工具
-
-为方便用户 使用了第三方库 来根据用户当前环境来安装 FFmpeg 工具。
-第三方库如下：
-
-```
-@ffmpeg-installer/ffmpeg
-@ffprobe-installer/ffprobe
-```
-
-FFCreatorCenter 配置FFmpeg 相关路径如下：
-
-`server/controller/video.js`的
-```js
-// 设置 FFmpeg 相关路径
-FFCreatorCenter.setFFmpegPath(ffmpegPath);
-FFCreatorCenter.setFFprobePath(ffprobePath);
-```
-
 ### 启动 mongodb
 
 - 安装 mongodb：[https://zhuanlan.zhihu.com/p/394960855](https://zhuanlan.zhihu.com/p/394960855)

@@ -80,6 +80,8 @@
 npm i
 ```
 
+- 在依赖安装过程中会去根据用户当前环境 自动拉取 `FFmpeg` 的相关二进制包，具体各个系统的相关二进制包可见[node-ffmpeg-installer二进制包详解](https://github.com/kribblo/node-ffmpeg-installer#the-binaries)
+
 ### 启动前端并开启 watch 模式
 
 此模式下会开启热更新

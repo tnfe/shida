@@ -24,6 +24,8 @@
                 :showPublishState="false"
               />
             </div>
+            <i></i><i></i><i></i><i></i><i></i>
+
           </div>
         </div>
       </el-scrollbar>
@@ -35,9 +37,10 @@
 </template>
 
 <script>
-import notFundData from "@client/components/notFundData";
-import thumbnailPanel from "@/components/thumbnail-panel";
-import previewPage from "./components/preview-template";
+import notFundData from '@client/components/notFundData';
+import thumbnailPanel from '@/components/thumbnail-panel';
+import previewPage from './components/preview-template';
+
 export default {
   components: {
     notFundData,
@@ -128,11 +131,19 @@ export default {
 }
 
 .page-item-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-content: center;
+  flex-wrap: wrap;
   .page-item {
-    float: left;
+    //float: left;
     margin-right: 20px;
     margin-bottom: 40px;
   }
+}
+.page-item-wrapper > i {
+  width: 200px;
+  margin-right: 10px;
 }
 </style>
 

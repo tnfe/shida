@@ -1,3 +1,30 @@
+const lodash = require('lodash')
+const fs = require('fs')
+const path = require('path')
+
+/**
+ * 删除模板对应的资源文件夹文件夹
+ * @param dir 文件夹目录
+ */
+function removeTemplateDir(dir) {
+  if(fs.existsSync(dir)){
+    let files = fs.readdirSync(dir)
+    for (let i = 0; i < files.length; i++) {
+      let newPath = path.join(dir, files[i])
+      let stat = fs.statSync(newPath)
+      if (stat.isDirectory()) {
+        //如果是文件夹就递归下去
+        removeTemplateDir(newPath)
+      } else {
+        //删除文件
+        fs.unlinkSync(newPath)
+      }
+    }
+    fs.rmdirSync(dir)//如果文件夹是空的，就将自己删除掉
+
+  }
+}
+
 module.exports = app => ({
   /**
    * 获取我的页面列表
@@ -7,15 +34,15 @@ module.exports = app => ({
     const { ctx, $model } = app;
     let userData = ctx.userData;
     let query = { pageMode: pageMode, isTemplate: { $ne: true } };
-    if (type === "my") {
+    if (type === 'my') {
       query.author = userData._id;
-    } else if (type === "cooperation") {
+    } else if (type === 'cooperation') {
       query.members = { $elemMatch: { $in: userData._id } };
     }
 
     return await $model.page
       .find(query)
-      .select("_id title coverImage isPublish")
+      .select('_id title coverImage isPublish')
       .sort({ created: -1 })
       .exec();
   },
@@ -41,7 +68,7 @@ module.exports = app => ({
       members: { $elemMatch: { $in: userData._id } },
       pageMode: pageMode,
       is_delete: { $ne: true },
-      isTemplate: { $ne: true }
+      isTemplate: { $ne: true },
     };
     return await $model.page.count(query);
   },
@@ -58,7 +85,7 @@ module.exports = app => ({
     }
     return await $model.page
       .find(query)
-      .select("_id title coverImage")
+      .select('_id title coverImage')
       .exec();
   },
   /**
@@ -67,11 +94,19 @@ module.exports = app => ({
    * @returns {Promise<*>}
    */
   async create(pageData) {
+    const page = pageData;
     const { ctx, $model } = app;
     let userData = ctx.userData;
+    delete pageData['__v'];
+    delete pageData['created'];
+    delete pageData['updated'];
+    delete pageData.shareConfig;
+    delete page['_id'];
+    const res = lodash.pick(pageData,['name','templateId','title','description','coverImage','script','width','height','pages','isTemplate'])
+
     return await $model.page.create({
-      ...pageData,
-      author: userData._id
+      ...res,
+      author: userData._id,
     });
   },
 
@@ -86,8 +121,8 @@ module.exports = app => ({
       { _id: pageData._id },
       { $set: pageData },
       {
-        runValidators: true
-      }
+        runValidators: true,
+      },
     );
   },
 
@@ -98,6 +133,12 @@ module.exports = app => ({
    */
   async deletePage(id) {
     const { $model } = app;
+    let imagesDir = path.join(__dirname, '..', '/public/resource/images', id)
+    let filesDir = path.join(__dirname, '..', '/public/resource/files', id)
+    let videosDir = path.join(__dirname, '..', '/public/resource/videos', id)
+    removeTemplateDir(imagesDir)
+    removeTemplateDir(filesDir)
+    removeTemplateDir(videosDir)
     return await $model.page.remove({ _id: id });
   },
 
@@ -130,14 +171,14 @@ module.exports = app => ({
   async addCooperationUser(pageId, userIds) {
     const { $model } = app;
     await $model.page.findByIdAndUpdate(pageId, {
-      $addToSet: { members: { $each: userIds } }
+      $addToSet: { members: { $each: userIds } },
     });
     let pageData = await $model.page
       .findOne({ _id: pageId })
       .populate({
-        path: "members",
+        path: 'members',
         model: $model.user,
-        select: "name username _id email avatar"
+        select: 'name username _id email avatar',
       })
       .exec();
     pageData = pageData.toObject();
@@ -154,9 +195,9 @@ module.exports = app => ({
     let doc = await $model.page
       .findOne({ _id: pageId })
       .populate({
-        path: "members",
+        path: 'members',
         model: $model.user,
-        select: "name username _id email avatar "
+        select: 'name username _id email avatar ',
       })
       .exec();
     doc = doc.toObject();
@@ -174,8 +215,8 @@ module.exports = app => ({
       { _id: pageId },
       { $pull: { members: userId } },
       {
-        runValidators: true
-      }
+        runValidators: true,
+      },
     );
   },
   /**
@@ -191,7 +232,7 @@ module.exports = app => ({
     }
     return await $model.page
       .find(query)
-      .select("_id title coverImage")
+      .select('_id title coverImage')
       .exec();
-  }
+  },
 });

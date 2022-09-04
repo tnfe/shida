@@ -13,7 +13,7 @@ module.exports = app => ({
     $helper.returnBody(true, {
       pages: pages,
       myPageCount: myPageCount,
-      myCooperationPageCount: myCooperationPageCount
+      myCooperationPageCount: myCooperationPageCount,
     });
   },
 
@@ -55,6 +55,21 @@ module.exports = app => ({
     }
   },
   /**
+   * todo-模板修改更新页面
+   * @returns {Promise<void>}
+   */
+  async templateUpdatePage() {
+    const { ctx, $service, $helper } = app;
+    let { pageData } = ctx.request.body;
+
+    try {
+      await $service.page.update(pageData);
+      $helper.returnBody(true);
+    } catch (e) {
+      $helper.returnBody(true, { e });
+    }
+  },
+  /**
    * 删除页面
    */
   async deletePage() {
@@ -64,22 +79,26 @@ module.exports = app => ({
     $helper.returnBody(true);
   },
   /**
-	 * 复制页面
-	 * @returns {Promise<void>}
-	 isPublish: false,
-	 isTemplate: false,
-	 members: [],
-	 author: author,
-	 */
+   * 复制页面
+   * @returns {Promise<void>}
+   isPublish: false,
+   isTemplate: false,
+   members: [],
+   author: author,
+   */
   async copyPage() {
     const { ctx, $service, $helper } = app;
     let { id } = ctx.request.body;
     let page = await $service.page.getPageDetail(id);
+
     page._id = undefined;
     page.isPublish = false;
     page.isTemplate = false;
     page.members = [];
+
+
     let newPage = await $service.page.create(page);
+
     $helper.returnBody(true, { _id: newPage._id });
   },
 
@@ -140,12 +159,12 @@ module.exports = app => ({
     let pageId = ctx.params._id;
     const pageData = await $service.page.getPageDetail(pageId);
     let pageMode = {
-      h5: "h5-swiper",
-      longPage: "h5-long",
-      relativePage: "h5-relative",
-      pc: "pc"
+      h5: 'h5-swiper',
+      longPage: 'h5-long',
+      relativePage: 'h5-relative',
+      pc: 'pc',
     };
     ctx.status = 200;
     await ctx.render(pageMode[pageData.pageMode], { pageData: pageData });
-  }
+  },
 });

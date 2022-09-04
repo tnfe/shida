@@ -16,7 +16,7 @@ let devServer = {
 module.exports = {
   devServer,
   // 输出文件目录
-  assetsDir: "static",
+  assetsDir: "bundle",
   // 修改 pages 入口
   pages: {
     index: {
@@ -29,11 +29,12 @@ module.exports = {
     loaderOptions: {
       sass: {
         // @/ 是 src/ 的别名
-        data: fs.readFileSync(path.resolve(__dirname, `./client/common/styles/variables.scss`), "utf-8") // 公共变量文件注入
+        additionalData: fs.readFileSync(path.resolve(__dirname, `./client/common/styles/variables.scss`), "utf-8") // 公共变量文件注入
       }
     }
   },
-
+  productionSourceMap: false,
+  publicPath: './',
   // 扩展 webpack 配置
   chainWebpack: config => {
     // @ 默认指向 src 目录，这里要改成 examples

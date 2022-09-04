@@ -71,7 +71,7 @@ export default {
   methods: {
     publishFun() {
       this.reset();
-      // 删掉音乐元素,并且按照zindex重新排序
+      // 删掉音乐元素,并且按照z-index重新排序
       this.pagesData = editorProjectConfig.processingProjectData(this.projectData);
       this.videoData = editorProjectConfig.cloneToVideoData(this.projectData);
 
@@ -91,16 +91,18 @@ export default {
      * 更新并且替换 videoData
      */
     updateVideoData(result) {
-      if (!result) return this.videoData;
+      if (!result) return this.videoData; //没有直接返回
 
       for (let i = 0; i < result.length; i++) {
         const { id, url, localPath } = result[i];
-        const element = editorProjectConfig.getDataByKeyFromVideoData(this.videoData, id);
+        const element = editorProjectConfig.getDataByKeyFromVideoData(this.videoData, id);//通过id获取元素
         if (element) {
+          //赋值
           element.propsValue.imageSrc = url;
           element.propsValue.localPath = localPath;
         }
       }
+      //返回新的videoData
       return this.videoData;
     },
 
@@ -108,9 +110,9 @@ export default {
      * 开始制作视频
      */
     async beginMakingVideo(videoData) {
-      console.log(videoData);
-      const res = await this.$API.beginMakeVideo({ videoData, folderId: this.folderId });
-      if (res.code == 200) {
+      // console.log(videoData);
+      const res = await this.$API.beginMakeVideo({ videoData, folderId: this.folderId, id: this.$route.query.id });
+      if (res.code === 200) {
         const { taskId, uuid } = res.body;
         this.getProgressing({ taskId, uuid });
       }
@@ -122,15 +124,17 @@ export default {
       const MAX = (100 * 1000) / DELAY;
 
       const id = setInterval(async () => {
-        const res = await this.$API.getVideoPercent({ taskId, uuid });
+        const res = await this.$API.getVideoPercent({ taskId, uuid ,id: this.$route.query.id});
         if (res.code == 200) {
           const { progress, state, videoUrl } = res.body;
-          this.$emit("making", { progress, state, videoUrl });
+          // this.$emit("making", { progress, state, videoUrl });
 
           if (state === "complete") {
             clearInterval(id);
             this.updateData({ videoUrl });
           }
+          //todo
+          this.$emit("making", { progress, state, videoUrl });
         } else {
           clearInterval(id);
         }
@@ -150,10 +154,10 @@ export default {
      */
     async screenshotAndUpload(noAniDomArr) {
       const pfiles = [];
-      for (let i = 0; i < noAniDomArr.length; i++) {
+      for (let i = 0; i < noAniDomArr.length; i++) {//遍历所有无动画组件
         const elements = noAniDomArr[i];
-        const files = await this.screenshots(elements, i);
-        if (isEmpty(files)) continue;
+        const files = await this.screenshots(elements, i);//截图,如果没有无动画组件直接返回
+        if (isEmpty(files)) continue; //如果没有则终止此次循环
 
         for (let j = 0; j < files.length; j++) {
           const file = files[j];
@@ -161,11 +165,11 @@ export default {
         }
       }
 
-      return await this.uploadAllImages(pfiles);
+      return await this.uploadAllImages(pfiles);//上传所有图片,
     },
 
     async uploadAllImages(pfiles) {
-      if (isEmpty(pfiles)) return;
+      if (isEmpty(pfiles)) return; //没有截图,直接返回
 
       const params = new FormData();
       forEach(pfiles, (file, index) => {
@@ -173,6 +177,7 @@ export default {
         params.append(`data${index}`, file.id);
       });
       params.append("folder", this.folderId);
+      params.append('id', String(this.$route.query.id))
 
       const res = await this.$API.uploadMultipleImages(params);
       if (res.status) {
@@ -186,7 +191,7 @@ export default {
      * 截图 - 同时截取一个page下的多个容器元素
      */
     async screenshots(elements, i) {
-      if (isEmpty(elements)) return;
+      if (isEmpty(elements)) return; //如果没有无动画组件,直接返回
 
       const el = this.$refs.con;
       const { width, height } = this.pagesData;
@@ -224,7 +229,15 @@ export default {
     groupingPagesData(pagesData) {
       const domIdsArr = [];
       const donotMergeLayer = ele => {
-        return !isEmpty(ele.animations) || ele.elName === "qk-video" || ele.elName === "qk-image-carousel";
+        let isGIF = false
+        if(ele.elName === 'qk-image') {
+          console.log( ele.propsValue.imageSrc)
+          const ext = ele.propsValue.imageSrc.split('.').pop()
+          if(ext === 'gif')
+            isGIF = true
+        }
+        // console.log(!isEmpty(ele.animations))
+        return !isEmpty(ele.animations) || ele.elName === "qk-video" || ele.elName === "qk-image-carousel" || isGIF;
       };
 
       for (let i = 0; i < pagesData.pages.length; i++) {
@@ -236,9 +249,9 @@ export default {
 
         // 添加-无动画的元素合
         const pushSubArr = () => {
-          if (!isEmpty(eleArr)) {
-            pageArr.push(clone(eleArr));
-            videoPage.elements.push({
+          if (!isEmpty(eleArr)) { //如果元素数组非空
+            pageArr.push(clone(eleArr));//添加到pageArr
+            videoPage.elements.push({ //向videoPage中添加图片元素
               elName: "qk-image",
               isFFImage: true,
               index,
@@ -258,12 +271,13 @@ export default {
         // 遍历元素处理
         for (let j = 0; j < page.elements.length; j++) {
           const ele = page.elements[j];
+          //如果是true:是 动画/视频/轮播图
           if (donotMergeLayer(ele)) {
             pushSubArr();
-            pageArr.push(ele.uuid);
-            videoPage.elements.push(cloneDeep(ele));
+            pageArr.push(ele.uuid); // 把元素uuid放入pageArr
+            videoPage.elements.push(cloneDeep(ele)); //把这个元素放入videoPage中
           } else {
-            eleArr.push(ele.uuid);
+            eleArr.push(ele.uuid); //存入eleArr
           }
         }
 

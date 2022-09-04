@@ -1,0 +1,267 @@
+{
+  "shareConfig": {
+    "coverImage": "",
+    "title": "这是#分享者#的大力推荐",
+    "description": "这是#分享者#大力推荐的H5"
+  },
+  "title": "视搭视频",
+  "videoUrl": "\\resource\\videos\\qm8yoz4rr0pvn66g.mp4",
+  "coverImage": "",
+  "description": "我用视搭可视化编辑器做了一个超酷炫的视频，快来看看吧。",
+  "script": "",
+  "width": 608,
+  "height": 1080,
+  "pageMode": "h5",
+  "flipType": 0,
+  "slideNumber": false,
+  "status": 1,
+  "isPublish": false,
+  "isTemplate": true,
+  "members": [],
+  "version": 6,
+  "_id": "62cbd22080793b149803c2b8",
+  "pages": [{
+    "uuid": "5433e9f1-aff1-4518-b18f-08870cfecd68",
+    "name": "",
+    "elements": [{
+      "uuid": "51ec29c8-88df-4080-85bc-bf5bfdff9deb",
+      "elName": "qk-video",
+      "animations": [{
+        "type": "fadeIn",
+        "duration": 1.5,
+        "infinite": "",
+        "interationCount": 1,
+        "delay": 0.5
+      }],
+      "commonStyle": {
+        "position": "absolute",
+        "width": 608,
+        "height": 1080,
+        "top": 0,
+        "left": 1,
+        "rotate": 0,
+        "paddingTop": 10,
+        "paddingLeft": 0,
+        "paddingRight": 0,
+        "paddingBottom": 10,
+        "marginTop": 0,
+        "marginLeft": 0,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "borderWidth": 0,
+        "borderColor": "",
+        "borderStyle": "solid",
+        "borderRadius": 0,
+        "boxShadow": "",
+        "fontSize": 16,
+        "fontWeight": 500,
+        "lineHeight": 1.4,
+        "letterSpacing": 0,
+        "textAlign": "center",
+        "color": "#000000",
+        "backgroundColor": "",
+        "backgroundImage": "",
+        "backgroundSize": "cover",
+        "opacity": 1,
+        "zIndex": 1
+      },
+      "events": [],
+      "propsValue": {
+        "videoSrc": "\\resource\\files\\3tf7NN90tiJ.mp4"
+      },
+      "valueType": "String",
+      "tag": {
+        "text": ["门头"],
+        "type": 12
+      }
+    }, {
+      "uuid": "eaf645e4-5222-4fec-98fb-1ef7d8ed9f3e",
+      "elName": "qk-text",
+      "animations": [{
+        "type": "slideInDown",
+        "duration": 1.5,
+        "infinite": "",
+        "interationCount": 1,
+        "delay": 0.5
+      }],
+      "commonStyle": {
+        "position": "absolute",
+        "width": 608,
+        "height": 87,
+        "top": 80,
+        "left": -4,
+        "rotate": 0,
+        "paddingTop": 0,
+        "paddingLeft": 0,
+        "paddingRight": 0,
+        "paddingBottom": 0,
+        "marginTop": 0,
+        "marginLeft": 0,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "borderWidth": 0,
+        "borderColor": "",
+        "borderStyle": "solid",
+        "borderRadius": 0,
+        "boxShadow": "",
+        "fontSize": 50,
+        "fontWeight": 500,
+        "lineHeight": 1.4,
+        "letterSpacing": 0,
+        "textAlign": "center",
+        "color": "#F58206",
+        "backgroundColor": "",
+        "backgroundImage": "",
+        "backgroundSize": "cover",
+        "opacity": 1,
+        "zIndex": 2,
+        "font-family": "AZhuPaoPaoTi-2"
+      },
+      "events": [],
+      "propsValue": {
+        "text": "这是一段文字",
+        "font": "AZhuPaoPaoTi-2"
+      },
+      "valueType": "String",
+      "tag": {
+        "text": ["门头"],
+        "type": -1
+      }
+    }],
+    "commonStyle": {
+      "backgroundColor": "rgba(3, 3, 3, 1)",
+      "backgroundImage": "",
+      "backgroundSize": "cover"
+    },
+    "data": {
+      "time": 2,
+      "duration": 6,
+      "trans": "WaterWave",
+      "transDuration": 1.5,
+      "backgroundColor": "rgba(3, 3, 3, 1)"
+    }
+  }, {
+    "uuid": "f776ff0e-aa65-4d4f-b962-25ff3b2a8666",
+    "name": "",
+    "elements": [{
+      "uuid": "5a246f21-f81c-41df-b7b3-0546daf12343",
+      "elName": "qk-video",
+      "animations": [{
+        "type": "fadeIn",
+        "duration": 1.5,
+        "infinite": "",
+        "interationCount": 1,
+        "delay": 0.5
+      }],
+      "commonStyle": {
+        "position": "absolute",
+        "width": 608,
+        "height": 1080,
+        "top": 0,
+        "left": 0,
+        "rotate": 0,
+        "paddingTop": 10,
+        "paddingLeft": 0,
+        "paddingRight": 0,
+        "paddingBottom": 10,
+        "marginTop": 0,
+        "marginLeft": 0,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "borderWidth": 0,
+        "borderColor": "",
+        "borderStyle": "solid",
+        "borderRadius": 0,
+        "boxShadow": "",
+        "fontSize": 16,
+        "fontWeight": 500,
+        "lineHeight": 1.4,
+        "letterSpacing": 0,
+        "textAlign": "center",
+        "color": "#000000",
+        "backgroundColor": "",
+        "backgroundImage": "",
+        "backgroundSize": "cover",
+        "opacity": 1,
+        "zIndex": 1
+      },
+      "events": [],
+      "propsValue": {
+        "videoSrc": "\\resource\\files\\3tfa9XH3tKL.mp4"
+      },
+      "valueType": "String",
+      "tag": {
+        "text": ["店内"],
+        "type": 12
+      }
+    }, {
+      "uuid": "a3da81d1-0bb6-4cb6-abf7-035f9d06e739",
+      "elName": "qk-text",
+      "animations": [{
+        "type": "slideInDown",
+        "duration": 1.5,
+        "infinite": "",
+        "interationCount": 1,
+        "delay": 0.5
+      }],
+      "commonStyle": {
+        "position": "absolute",
+        "width": 608,
+        "height": 87,
+        "top": 200,
+        "left": 0,
+        "rotate": 0,
+        "paddingTop": 0,
+        "paddingLeft": 0,
+        "paddingRight": 0,
+        "paddingBottom": 0,
+        "marginTop": 0,
+        "marginLeft": 0,
+        "marginRight": 0,
+        "marginBottom": 0,
+        "borderWidth": 0,
+        "borderColor": "",
+        "borderStyle": "solid",
+        "borderRadius": 0,
+        "boxShadow": "",
+        "fontSize": 50,
+        "fontWeight": 500,
+        "lineHeight": 1.4,
+        "letterSpacing": 0,
+        "textAlign": "center",
+        "color": "#F58206",
+        "backgroundColor": "",
+        "backgroundImage": "",
+        "backgroundSize": "cover",
+        "opacity": 1,
+        "zIndex": 2,
+        "font-family": "AZhuPaoPaoTi-2"
+      },
+      "events": [],
+      "propsValue": {
+        "text": "这是一段文字",
+        "font": "AZhuPaoPaoTi-2"
+      },
+      "valueType": "String",
+      "tag": {
+        "text": ["门头"],
+        "type": -1
+      }
+    }],
+    "commonStyle": {
+      "backgroundColor": "rgba(3, 3, 3, 1)",
+      "backgroundImage": "",
+      "backgroundSize": "cover"
+    },
+    "data": {
+      "time": 2,
+      "duration": 6,
+      "trans": "WaterWave",
+      "transDuration": 1.5,
+      "backgroundColor": "rgba(3, 3, 3, 1)"
+    }
+  }],
+  "author": "62bd42e273caf527cc843af9",
+  "created": "2022-07-11T07:32:48.612Z",
+  "updated": "2022-07-11T07:46:12.925Z"
+}

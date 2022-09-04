@@ -1,5 +1,6 @@
 <template>
   <div class="quark-element-wrapper" @click="handleClick">
+    21321312313
     <component :is="element.elName" class="quark-element ani" v-bind="element.propsValue" />
   </div>
 </template>

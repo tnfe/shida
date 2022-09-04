@@ -1,6 +1,6 @@
-import { createUUID, deepClone } from "../../../common/uitls";
-import { cloneDeep, merge, sortBy } from "lodash";
-import $config from "@client/config";
+import { createUUID, deepClone } from '../../../common/uitls';
+import { cloneDeep, merge, sortBy } from 'lodash';
+import $config from '@client/config';
 
 // 元素配置信息字段
 let elementConfig = {
@@ -32,6 +32,7 @@ let elementConfig = {
     letterSpacing: 0,
     textAlign: "center",
     color: "#000000",
+    candidateColor:[],  //新增随机颜色候选列表
     backgroundColor: "",
     backgroundImage: "",
     backgroundSize: "cover",
@@ -68,11 +69,12 @@ let projectConfig = {
   title: "视搭视频",
   description: "我用视搭可视化编辑器做了一个超酷炫的视频，快来看看吧。",
   coverImage: "",
-  auther: "",
+  author: "",
   script: "",
   width: $config.canvasH5Width,
   height: $config.canvasH5Height,
-  pages: []
+  pages: [],
+
 };
 
 let getElementConfig = function(element, extendStyle = {}) {
@@ -102,13 +104,17 @@ let getElementConfig = function(element, extendStyle = {}) {
   return config;
 };
 
-let copyElement = function(element, extendStyle = {}) {
+let copyElement = function(element, extendStyle = {},copyType="element") {
   element = cloneDeep(element);
   element.uuid = createUUID();
   element.commonStyle = merge(element.commonStyle, extendStyle);
-  // 加上一点偏移量，以作区分
-  element.commonStyle.top = element.commonStyle.top + 10;
-  element.commonStyle.left = element.commonStyle.left + 10;
+  console.log(extendStyle);
+  if(copyType === "element"){
+    // 加上一点偏移量，以作区分
+    element.commonStyle.top = element.commonStyle.top + 10;
+    element.commonStyle.left = element.commonStyle.left + 10;
+  }
+
   return element;
 };
 
@@ -122,7 +128,7 @@ let copyPage = function(data) {
   let pageData = cloneDeep(data);
   pageData.uuid = createUUID();
   pageData.elements = pageData.elements.map(element => {
-    return copyElement(element);
+    return copyElement(element,{},"page");
   });
   return pageData;
 };
@@ -226,7 +232,7 @@ const getMusicAudio = projectData => {
   return music;
 };
 
-// 删掉音乐元素,并且按照zindex重新排序
+// 删掉音乐元素,并且按照z-index重新排序
 const processingProjectData = projectData => {
   const newData = deepClone(projectData);
 

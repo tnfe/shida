@@ -20,8 +20,8 @@ const configObj = {
   isDevelop: isDev || isTest,
   ...configDict[currentConfigKey],
 
-  canvasH5Width: 384,
-  canvasH5Height: 682,
+  canvasH5Width: 608 ,
+  canvasH5Height: 1080,
   pageModeList: [
     {
       value: "h5",

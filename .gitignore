@@ -19,6 +19,8 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw?
+/server/cache
 /server/public/psd_static
-/server/public/
-/server/public
+/server/public/resource
+/server/public/static/demo素材
+/assets/demo素材

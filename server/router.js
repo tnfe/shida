@@ -59,5 +59,14 @@ module.exports = app => {
   router.get("/quark/video/cacheclean", $middleware.auth, $controller.video.cacheClean);
   router.get("/quark/video/progress", $middleware.auth, $controller.video.getProgress);
 
+
+
+  //todo-模板路由
+  router.post("/quark/video/templateMaking", $middleware.auth, $controller.video.templateMaking);
+  router.get("/quark/video/templateCacheclean", $middleware.auth, $controller.video.templateCacheclean);
+  router.get("/quark/video/templateGetProgress", $middleware.auth, $controller.video.templateGetProgress);
+  router.post("/quark/page/templateUpdatePage", $middleware.auth, $controller.page.templateUpdatePage);
+  router.post("/quark/images/templateUploadMultipleImages", $middleware.auth, $controller.image.templateUploadMultipleImages);
+
   return router;
 };

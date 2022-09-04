@@ -3,7 +3,8 @@ module.exports = app => ({
     const { ctx, $service, $helper } = app;
     const file = ctx.request.files.file;
     const folder = `files`;
-    const result = await $service.file.fileUpload({ file, folder });
+    const id = ctx.request.body.id
+    const result = await $service.file.fileUpload({ file, folder },id);
     $helper.returnBody(true, result);
   }
 });

@@ -1,13 +1,15 @@
 /**
  *  路由权限相关管理
  * */
+
 import router from '@/router'
 import NProgress from 'nprogress' // 进度条
 import 'nprogress/nprogress.css' // 进度条样式
-import userModel from '@/libs/userModel'
+
 
 router.beforeEach(async (to, from, next) => {
 	NProgress.start()
+  
 	// // 检测是否需要用户登录验证
 	// if(to.meta.noNeedLogin){
 	// 	next()

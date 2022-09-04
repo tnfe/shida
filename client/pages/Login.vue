@@ -134,7 +134,7 @@ export default {
         }
       });
     },
-    switchType() {
+    switchType() { 
       if (this.type === "login") {
         this.type = "register";
       } else {

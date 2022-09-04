@@ -15,6 +15,7 @@ import "@/common/styles/element-variables.scss";
 import "@/common/styles/index.scss"; // 自定义 css
 import "animate.css";
 import VueClipboard from "vue-clipboard2";
+import '@/common/text-fonts/index.css'
 
 Vue.use(Element);
 Vue.use(VueClipboard);

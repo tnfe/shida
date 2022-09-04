@@ -26,7 +26,7 @@
         <!--页面列表-->
         <div class="page-item-wrapper" v-loading="loading">
           <div class="page-item">
-            <thumbnailPanel :pageType="searchParams.pageMode" />
+            <thumbnailPanel :pageType="searchParams.pageMode"/>
           </div>
           <div class="page-item" v-for="(item, index) in pageList" :key="index">
             <thumbnailPanel
@@ -36,7 +36,10 @@
               :btnList="operationBtn(item.isPublish)"
             />
           </div>
+          <i></i><i></i><i></i><i></i><i></i>
+
         </div>
+
       </div>
     </el-scrollbar>
     <!--预览-->
@@ -47,6 +50,10 @@
 <script>
 import thumbnailPanel from "@/components/thumbnail-panel";
 import previewPage from "./components/preview";
+import editorProjectConfig from "@/pages/editor/DataModel";
+
+//todo
+import templateProjectConfig from '@/pages/template/DataModel'
 
 export default {
   components: {
@@ -117,7 +124,26 @@ export default {
     showPreviewFn(id) {
       this.previewId = id;
       this.showPreview = true;
+    },
+    
+    
+    //todo 新建模板
+    newTemplate() {
+      let newPageData = templateProjectConfig.getProjectConfig();
+      this.loading = true;
+      this.$API
+        .createPage({...newPageData})
+        .then(res => {
+          this.loading = false;
+          if (res.body) {
+            this.$router.push({name: "Template", query: {id: res.body._id}});
+          }
+        })
+        .catch(() => {
+          this.loading = false;
+        });
     }
+    
   }
 };
 </script>
@@ -136,14 +162,17 @@ export default {
   line-height: 40px;
   z-index: 2;
   margin-bottom: 20px;
+  
   .my-page-nav-item {
     float: left;
     padding-right: 32px;
     text-align: center;
     cursor: pointer;
+    
     &.active {
       color: $primary;
     }
+    
     &:hover {
       color: $primary;
     }
@@ -167,11 +196,19 @@ export default {
 
 .page-item-wrapper {
   .page-item {
-    float: left;
     margin-right: 20px;
     margin-bottom: 40px;
   }
+  display: flex;
+  justify-content: space-between;
+  align-content: center;
+  flex-wrap: wrap;
 }
+.page-item-wrapper > i {
+  width: 200px;
+  margin-right: 10px;
+}
+
 </style>
 <style lang="scss">
 .my-page-list {
@@ -179,6 +216,7 @@ export default {
     .el-tabs__header {
       margin: 0;
     }
+    
     .el-tabs__nav-wrap {
       padding: 0 30px;
     }

@@ -15,6 +15,16 @@ export const updatePage = (p = {}) => {
 
   return $axios.post("/quark/page/update?update=1", p);
 };
+//todo-模板更新
+// 更新页面
+export const templateUpdatePage = (p = {}) => {
+  let { version = 1 } = p.pageData;
+  version = parseInt(version);
+  version++;
+  p.pageData.version = version;
+
+  return $axios.post("/quark/page/templateUpdatePage?update=1", p);
+};
 // 删除页面
 export const deletePage = p => $axios.post("/quark/page/delete", p);
 // 复制页面

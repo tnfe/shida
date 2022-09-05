@@ -71,7 +71,7 @@
 ### 启动 mongodb
 
 - 安装 mongodb：[https://zhuanlan.zhihu.com/p/394960855](https://zhuanlan.zhihu.com/p/394960855)
-- 配置 mongodb：配置文件在`/server/config/index.js`
+- 配置 mongodb：配置文件在`/server/config/index.css`
 - 启动 mongodb：[https://www.cnblogs.com/zhm1985/p/13111448.html](https://www.cnblogs.com/zhm1985/p/13111448.html)
 
 ### 安装依赖
@@ -109,7 +109,7 @@ npm run dev-server
 ### 启动 mongodb
 
 - 安装 mongodb：[https://zhuanlan.zhihu.com/p/394960855](https://zhuanlan.zhihu.com/p/394960855)
-- 配置 mongodb：配置文件在`/server/config/index.js`
+- 配置 mongodb：配置文件在`/server/config/index.css`
 - 启动 mongodb：[https://www.cnblogs.com/zhm1985/p/13111448.html](https://www.cnblogs.com/zhm1985/p/13111448.html)
 
 ### 需要全局安装 pm2

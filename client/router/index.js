@@ -49,6 +49,11 @@ export default new Router({
           path: "/editor",
           name: "Editor",
           component: () => import("@/pages/editor/Index")
+        },
+        {
+          path:"/template",
+          name:"Template",
+          component:() => import('@/pages/template/Index')
         }
       ]
     },

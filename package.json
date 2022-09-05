@@ -28,6 +28,7 @@
     "element-ui": "~2.13.0",
     "ffcreator": "^6.4.3",
     "html3canvas": "^1.1.5",
+    "fluent-ffmpeg": "^2.1.2",
     "js-shortid": "^0.1.1",
     "koa-body": "^4.1.1",
     "koa-ejs": "^4.2.0",
@@ -35,6 +36,7 @@
     "node-schedule": "^1.3.2",
     "nprogress": "^0.2.0",
     "qrcode.vue": "^1.6.3",
+    "request": "^2.88.2",
     "swiper": "^6.3.5",
     "vue": "^2.6.10",
     "vue-awesome-swiper": "^4.1.1",
@@ -75,11 +77,11 @@
     "koa2-cors": "^2.0.6",
     "mongodb": "^3.3.3",
     "mongoose": "^5.13.10",
-    "node-sass": "^4.9.0",
+    "node-sass": "^6.0.1",
     "nodemon": "^1.19.4",
     "psd": "^3.2.0",
     "pug": "^2.0.3",
-    "sass-loader": "^7.1.0",
+    "sass-loader": "^10.0.1",
     "vue-template-compiler": "^2.6.10"
   }
 }

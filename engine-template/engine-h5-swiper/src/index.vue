@@ -24,7 +24,7 @@
                 scalingRatio
               )
             "
-          >
+          >aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
             <componentsTemplate
               v-for="(item, index) in page.elements"
               :key="index"
@@ -37,7 +37,7 @@
           </div>
         </div>
       </div>
-      <div class="swiper-pagination"></div>
+      <div class="swiper-pagination">aaaaaaaasssaaaaaaaa</div>
       <!--分页器。如果放置在swiper-container外面，需要自定义样式。-->
     </div>
   </div>

@@ -9,5 +9,5 @@
     "pass": "",
     "authSource": ""
   },
-  "baseURL": ""
+  "baseURL": "http://localhost:4000"
 }

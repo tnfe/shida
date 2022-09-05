@@ -62,7 +62,7 @@
         <el-tab-pane v-for="item in animateCssDatas" :key="item.label" :label="item.label" :name="item.label">
           <el-scrollbar class="animate-choose-item">
             <div
-              class="animate-choose-item-inner"
+              :class="animate.unclick?'animate-choose-item-inner unclick':'animate-choose-item-inner'"
               v-for="(animate, index) in item.children"
               :key="index"
               @mouseover="hoverPreviewAnimate = animate.value"
@@ -72,7 +72,7 @@
               <span
                 class="animate-choose-image"
                 :style="{ backgroundPosition: `${item.bg_X}px ${item.bg_Y}px` }"
-                :class="[hoverPreviewAnimate === animate.value && animate.value + ' animated']"
+                :class="[hoverPreviewAnimate === animate.value  && animate.value + ' animated']"
               ></span>
               <p>{{ animate.label }}</p>
             </div>
@@ -85,8 +85,10 @@
 
 <script>
 import animateCssData from "@client/common/animateCssData";
+import filterCssData from "@client/common/ffcreatorCssData";
 import { mapState, mapGetters } from "vuex";
 import $bus from "@client/eventBus";
+import {random} from 'lodash'
 
 export default {
   data() {
@@ -95,7 +97,7 @@ export default {
       activeName: "进入",
       showAnimatePanel: false,
       reSelectAnimateIndex: undefined,
-      hoverPreviewAnimate: ""
+      hoverPreviewAnimate: "",
     };
   },
   computed: {
@@ -104,7 +106,7 @@ export default {
       activePageUUID: state => state.editor.activePageUUID,
       activeElementUUID: state => state.editor.activeElementUUID
     }),
-    ...mapGetters(["currentPageIndex", "activeElementIndex", "activeElement"])
+    ...mapGetters(["currentPageIndex", "activeElementIndex", "activeElement"]),
   },
   watch: {
     activePageUUID() {
@@ -116,14 +118,28 @@ export default {
       this.addAnimate(false);
     }
   },
+
   methods: {
     /**
      * 选取animate
      * @param item
      */
     handleChooseAnimate(item) {
+	for(let i = 0;i < filterCssData.children.length;i++) {
+        if(item.value === filterCssData.children[i].value) {
+          console.log(item.value)
+          return ''
+        } 
+      }
       this.showAnimatePanel = false;
+      let randomAnimate
+      if(item.value === "random") {
+	console.log(item.value);
+         randomAnimate = this.createRandomAnimate(this.activeName)
+        item = randomAnimate
+      }
       if (this.reSelectAnimateIndex === undefined) {
+	console.log(item.value);
         this.$store.dispatch("addElementAnimate", item.value);
       } else {
         this.activeElement.animations[this.reSelectAnimateIndex].type = item.value;
@@ -149,8 +165,36 @@ export default {
      * 执行此条动画效果
      */
     runAnimate(index) {
+      console.log(index)
       let animationData = index === undefined ? this.activeElement.animations : [this.activeElement.animations[index]];
       $bus.$emit("RUN_ANIMATIONS", this.activeElement.uuid, animationData);
+    },
+    /**
+     * 随机动画
+     */
+    createRandomAnimate(activeName){
+      let animate
+      if(activeName === "进入"){
+         animate = animateCssData[0].children
+      }else if(activeName === "强调"){
+         animate = animateCssData[1].children
+      }else if(activeName === "退出"){
+         animate = animateCssData[2].children
+      } else {
+        return -1
+      }
+      const animateCounts = animate.length
+	console.log(animateCounts)
+      return animate[random(1, animateCounts - 1)]
+    },
+    //判断动画是否可以选择
+    isdisClick(item) {
+      for(let i = 0;i < filterCssData.children.length;i++) {
+        if(item.value === filterCssData.children[i].value) {
+          return ''
+        } 
+      }
+      this.handleChooseAnimate(item)
     }
   }
 };
@@ -207,6 +251,7 @@ export default {
   }
 }
 
+
 .animate-choose-list-wrapper {
   position: fixed;
   top: 0;
@@ -232,7 +277,7 @@ export default {
     display: inline-block;
     width: 25%;
     height: 72px;
-    color: rgb(118, 131, 143);
+    color: rgb(21, 147, 255);
     text-align: center;
     cursor: pointer;
     & > .animate-choose-image {
@@ -241,11 +286,25 @@ export default {
       height: 40px;
       margin-bottom: 6px;
       background-image: url(../../../../common/images/use-beb469.png);
+      background-position:0 -480px;
     }
     p {
       font-size: 12px;
       line-height: 1;
     }
+  }
+}
+.animate-choose-item .unclick {
+  // border: #666 solid 1px;
+  border-radius: 20%;
+  color: rgb(147, 142, 142);
+  & > .animate-choose-image {
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      margin-bottom: 6px;
+      background-image: url(../../../../common/images/use-beb469.png);
+      background-position:0 0;
   }
 }
 
@@ -301,7 +360,15 @@ export default {
     }
   }
 }
+//随机按钮的样式
+.random-animate-button {
+  display: table;
+  margin: 0 auto;
+  color:#fff;
+  background: rgb(153, 153, 153);
+}
 </style>
+
 <style lang="scss">
 .components-attr-edit {
   .el-tabs {

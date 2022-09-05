@@ -53,7 +53,7 @@
       :pageData="projectData"
       @closePanel="showMakingPanel = false"
       @saveFn="saveFn"
-    ></makingPanel>
+    />
   </div>
 </template>
 

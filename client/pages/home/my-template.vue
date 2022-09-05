@@ -1,5 +1,7 @@
 <template>
   <div class="clearfix my-page-list">
+    
+ 
     <div class="page-search-wrapper bg-white">
       <el-tabs v-model="searchParams.pageMode" @tab-click="handlePageModeClick">
         <el-tab-pane :name="item.value" :disabled="item.disabled" v-for="(item, index) in pageModeList" :key="index">
@@ -10,23 +12,28 @@
       </el-tabs>
     </div>
     <div class="scroll-wrapper page-list-wrapper">
-      <el-scrollbar style="height: 100%;" v-if="pageList.length">
+      <el-scrollbar style="height: 100%;">
         <div class="page-content" v-loading="loading">
           <!--页面列表-->
           <div class="page-item-wrapper">
+            <div class="page-item">
+              <thumbnailPanel :pageType="searchParams.pageMode"  :isTemplate="isTemplate"/>
+            </div>
             <div class="page-item" v-for="(item, index) in pageList" :key="index">
               <thumbnailPanel
                 @refresh="getPageList"
                 @showPreview="showPreviewFn"
                 :pageData="item"
-                :btnList="['edit', 'useTemplate', 'publishTemplate', 'delete']"
+
+                :btnList="['edit', 'useTemplate', 'publishTemplate', 'delete','copyTemplate']"
                 :showPublishState="false"
               />
             </div>
+            <i></i><i></i><i></i><i></i><i></i>
           </div>
         </div>
       </el-scrollbar>
-      <notFundData v-else />
+<!--      <notFundData v-else />-->
     </div>
     <!--预览-->
     <previewPage v-if="showPreview" :pageId="previewId" @closePreview="showPreview = false"></previewPage>
@@ -52,7 +59,8 @@ export default {
         pageMode: "h5"
       },
       previewId: "",
-      showPreview: false
+      showPreview: false,
+      isTemplate:true
     };
   },
   created() {
@@ -132,10 +140,17 @@ export default {
 
 .page-item-wrapper {
   .page-item {
-    float: left;
     margin-right: 20px;
     margin-bottom: 40px;
   }
+  display: flex;
+  justify-content: space-between;
+  align-content: center;
+  flex-wrap: wrap;
+}
+.page-item-wrapper > i  {
+  width: 200px;
+  margin-right: 10px;
 }
 </style>
 

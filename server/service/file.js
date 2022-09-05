@@ -20,12 +20,17 @@ module.exports = app => ({
     };
   },
 
-  async fileUpload({ file, folder = "images" }) {
+  async fileUpload({ file, folder = "images" },id) {
     const { $config } = app;
     const resource = path.join(__dirname, "../public/resource/");
 
     const fileData = fs.readFileSync(file.path);
-    const folderPath = path.join(resource, folder);
+
+    let folderPath = path.join(resource, folder,id)
+    if(folder.includes('images')) {
+      folderPath = path.join(resource, folder)
+    }
+    // console.log(folderPath)
     await fs.ensureDir(folderPath);
 
     const name = shortid.gen();
@@ -33,11 +38,15 @@ module.exports = app => ({
     const fileName = `${name}.${ext}`;
     const filePath = path.join(folderPath, fileName);
     await fs.outputFile(filePath, fileData);
+    let url = path.join($config.baseUrl || '', '/resource/', folder,id, fileName)
+    if(folder.includes('images')) {
+      url = path.join($config.baseUrl || '', '/resource/', folder, fileName)
+    }
 
     return {
       fileName,
       localPath: filePath,
-      url: path.join($config.baseUrl || "", "/resource/", folder, fileName)
+      url
     };
   }
 });

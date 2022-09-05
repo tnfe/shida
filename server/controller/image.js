@@ -35,18 +35,42 @@ module.exports = app => ({
     const files = ctx.request.files;
     const body = ctx.request.body;
     const images = [];
+    const uuid = ctx.request.body.id
 
     let folder = body.folder || `${sid}`;
-    folder = `images/${folder}`;
-    
+    folder = `images/${uuid}/${folder}`
     for (let key in files) {
       const file = files[key];
       const index = key.replace("file", "");
       const data = body[`data${index}`];
-      const { localPath, url } = await $service.file.fileUpload({ file, folder });
+      const { localPath, url } = await $service.file.fileUpload({ file, folder },uuid);
+      images.push({ id: data, localPath, url });
+    }
+
+    $helper.returnBody(true, images);
+  } ,
+
+  //todo-模板上传
+  async templateUploadMultipleImages() {
+    const { ctx, $service, $helper } = app;
+    const sid = shortid.gen();
+    const files = ctx.request.files;
+    const body = ctx.request.body;
+    const images = [];
+    const uuid = ctx.request.body.id
+
+    let folder = body.folder || `${sid}`;
+    //image有一个随机id的文件夹
+    folder = `images/${uuid}/${folder}`
+    for (let key in files) {
+      const file = files[key];
+      const index = key.replace("file", "");
+      const data = body[`data${index}`];
+      const { localPath, url } = await $service.file.fileUpload({ file, folder },uuid);
       images.push({ id: data, localPath, url });
     }
 
     $helper.returnBody(true, images);
   }
+
 });

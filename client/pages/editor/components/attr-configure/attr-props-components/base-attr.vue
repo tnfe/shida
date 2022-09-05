@@ -22,13 +22,14 @@
         <div class="attr-item-edit-wrapper">
           <p class="attr-item-title">位置：</p>
           <div class="col-2 attr-item-edit-input">
-            <el-input-number size="mini" v-model="activeElement.commonStyle.top" controls-position="right" />
+            <el-input-number size="mini" v-model="activeElement.commonStyle.left" controls-position="right" />
             <div class="attr-item-edit-input-des">X</div>
           </div>
           <div class="col-2 attr-item-edit-input">
-            <el-input-number size="mini" v-model="activeElement.commonStyle.left" controls-position="right" />
+            <el-input-number size="mini" v-model="activeElement.commonStyle.top" controls-position="right" />
             <div class="attr-item-edit-input-des">Y</div>
           </div>
+         
         </div>
         <div class="attr-item-edit-wrapper">
           <p class="attr-item-title">旋转：</p>

@@ -12,6 +12,10 @@ export default {
     text: {
       type: String,
       default: "这是一段文字"
+    },
+    font: {
+      type: String,
+      default: "wryh"
     }
   },
   data() {

@@ -1,0 +1,28 @@
+
+@font-face {
+    font-family: "Aa剑豪体";
+    src: url('./src/Aa剑豪体.ttf');
+    font-weight: normal;
+    font-style: normal;
+} 
+
+
+@font-face {
+    font-family: "云峰静龙行书";
+    src: url('./src/云峰静龙行书.ttf');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "今年也要加油鸭";
+    src: url('./src/今年也要加油鸭.ttf');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: "云峰飞云体";
+    src: url('./src/云峰飞云体.ttf');
+    font-weight: normal;
+    font-style: normal;
+}

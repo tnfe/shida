@@ -1,24 +1,25 @@
 <!--test.vue-->
 <template>
-  <div class="qk-image-carsousel">
+  <div class='qk-image-carousel'>
     <!--异步加载轮播图的情况;-->
     <Swiper
-      class="image-carsousel-swiper"
+      class='image-carousel-swiper'
       v-if="imageSrcList.length > 0"
       :autoPlay="true"
       :showIndicator="true"
       :interval="interval * 1000"
       duration="500"
     >
-      <Slide class="image-carsousel-slide" v-for="(item, index) in imageSrcList" :key="index">
-        <img class="image-carsousel-image" :src="item" alt="" />
+      <Slide class='image-carousel-slide' v-for="(item, index) in carouselUrl" :key="index">
+        <img class='image-carousel-image' :src="item" alt="" />
       </Slide>
     </Swiper>
   </div>
 </template>
 
 <script>
-import { Swiper, Slide } from "vue-swiper-component";
+import { Slide, Swiper } from 'vue-swiper-component';
+
 export default {
   name: "QkImageCarousel",
   components: {
@@ -37,6 +38,19 @@ export default {
       default: 1
     }
   },
+  computed:{
+    carouselUrl() {
+      const imageUrlList = []
+      this.imageSrcList.forEach(imageSrc =>{
+        if (imageSrc.includes('static')){
+          imageUrlList.push(imageSrc);
+        }else{
+          imageUrlList.push( 'resource' + imageSrc.split('resource')[1])
+        }
+      })
+      return imageUrlList
+    }
+  },
   data() {
     return {};
   },
@@ -45,16 +59,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.image-carsousel-swiper,
-.image-carsousel-slide,
-.image-carsousel-image {
+.image-carousel-swiper,
+.image-carousel-slide,
+.image-carousel-image {
   display: block;
   width: 100%;
   height: 100%;
 }
 </style>
 <style>
-.image-carsousel-swiper .wh_swiper {
+.image-carousel-swiper .wh_swiper {
   height: 100%;
 }
 </style>

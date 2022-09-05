@@ -1,9 +1,11 @@
 module.exports = app => {
   const { mongoose } = app;
   const Schema = mongoose.Schema;
+
   // Schema
   const schema = new Schema(
     {
+      templateId:{type:String,default:""},
       title: { type: String, default: "视频X" },
       videoUrl: { type: String, default: null },
       coverImage: { type: String, default: "" },

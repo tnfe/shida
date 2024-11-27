@@ -28,8 +28,11 @@ module.exports = {
   css: {
     loaderOptions: {
       sass: {
-        // @/ 是 src/ 的别名
-        additionalData: fs.readFileSync(path.resolve(__dirname, `./client/common/styles/variables.scss`), "utf-8") // 公共变量文件注入
+        sassOptions: {
+          quietDeps: true
+        },
+        implementation: require('sass'),
+        additionalData: `@use "${path.resolve(__dirname, './client/common/styles/variables.scss')}" as *;`
       }
     }
   },
